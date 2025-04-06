@@ -2,6 +2,7 @@ import os
 import json
 import sys
 import subprocess
+from security import safe_command
 
 REQUIRED_FIELDS = {"question", "final_answer", "rationale", "metadata"}
 REQUIRED_METADATA_FIELDS = {"license", "source", "domain"}
@@ -16,7 +17,7 @@ def get_changed_seed_files():
         else:
             # Push to main
             cmd = "git diff --name-only HEAD~1 HEAD"
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        result = safe_command.run(subprocess.run, cmd, shell=True, capture_output=True, text=True)
         files = result.stdout.strip().split('\n')
         return [f for f in files if f.startswith("data/") and f.endswith("seed.json")]
     except Exception as e:
